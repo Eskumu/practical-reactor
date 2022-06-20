@@ -2,6 +2,8 @@ import org.junit.jupiter.api.*;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
+
 /**
  * Another way of controlling amount of data flowing is batching.
  * Reactor provides three batching strategies: grouping, windowing, and buffering.
@@ -26,10 +28,9 @@ public class c11_Batching extends BatchingBase {
      */
     @Test
     public void batch_writer() {
-        //todo do your changes here
-        Flux<Void> dataStream = null;
-        dataStream();
-        writeToDisk(null);
+        Flux<Void> dataStream = dataStream()
+                .buffer(10)
+                .flatMap(this::writeToDisk);
 
         //do not change the code below
         StepVerifier.create(dataStream)
@@ -47,10 +48,10 @@ public class c11_Batching extends BatchingBase {
      */
     @Test
     public void command_gateway() {
-        //todo: implement your changes here
-        Flux<Void> processCommands = null;
-        inputCommandStream();
-        sendCommand(null);
+        // TODO: feedback: could have assertion with time, test passes with concatMap, although it is not parallel.
+        Flux<Void> processCommands = inputCommandStream()
+                .groupBy(Command::getAggregateId)
+                .flatMap(g -> g.concatMap(this::sendCommand));
 
         //do not change the code below
         StepVerifier.create(processCommands)
@@ -65,7 +66,8 @@ public class c11_Batching extends BatchingBase {
     @Test
     public void sum_over_time() {
         Flux<Long> metrics = metrics()
-                //todo: implement your changes here
+                .window(Duration.ofSeconds(1))
+                .concatMap(m -> m.reduce(Long::sum))
                 .take(10);
 
         StepVerifier.create(metrics)
