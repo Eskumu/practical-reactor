@@ -1,5 +1,6 @@
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.NonBlocking;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
@@ -27,14 +28,17 @@ public class ExecutionControlBase {
         return Flux.just(Mono.just("1")
                              .doOnNext(n -> System.out.println("Executing task #1..."))
                              .delayElement(Duration.ofMillis(900))
+                             .doOnNext(n -> System.out.println("Delayed #1..."))
                              .subscribeOn(Schedulers.boundedElastic()),
                          Mono.just("2")
                              .doOnNext(n -> System.out.println("Executing task #2..."))
                              .delayElement(Duration.ofMillis(1000))
+                             .doOnNext(n -> System.out.println("Delayed #2..."))
                              .subscribeOn(Schedulers.boundedElastic()),
                          Mono.just("3")
                              .doOnNext(n -> System.out.println("Executing task #3..."))
                              .delayElement(Duration.ofMillis(800))
+                             .doOnNext(n -> System.out.println("Delayed #3..."))
                              .subscribeOn(Schedulers.boundedElastic())
         );
     }
