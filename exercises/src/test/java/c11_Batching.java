@@ -48,14 +48,16 @@ public class c11_Batching extends BatchingBase {
      */
     @Test
     public void command_gateway() {
-        // TODO: feedback: could have assertion with time, test passes with concatMap, although it is not parallel.
         Flux<Void> processCommands = inputCommandStream()
                 .groupBy(Command::getAggregateId)
                 .flatMap(g -> g.concatMap(this::sendCommand));
 
         //do not change the code below
-        StepVerifier.create(processCommands)
+        Duration duration = StepVerifier.create(processCommands)
                     .verifyComplete();
+
+        Assertions.assertTrue(duration.getSeconds() <= 3, "Expected to complete in less than 3 seconds");
+
     }
 
 

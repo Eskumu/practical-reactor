@@ -54,7 +54,6 @@ public class c8_Sinks extends SinksBase {
      */
     @Test
     public void single_subscriber() {
-        //todo: feel free to change code as you need
         Sinks.Many<Integer> sink = Sinks.many().unicast().onBackpressureBuffer();
         Flux<Integer> measurements = sink.asFlux();
         submitOperation(() -> {
@@ -76,7 +75,6 @@ public class c8_Sinks extends SinksBase {
      */
     @Test
     public void it_gets_crowded() {
-        //todo: feel free to change code as you need
         Sinks.Many<Integer> sink = Sinks.many().multicast().onBackpressureBuffer();
         Flux<Integer> measurements = sink.asFlux();
         submitOperation(() -> {

@@ -36,6 +36,10 @@ public class ContextBase {
         public Integer page = 0;
 
         public Page(Integer page) {
+            if (page < 1) {
+                System.out.println("Page number must be positive!");
+                throw new IllegalStateException("Page number must be positive!");
+            }
             if (page == 3) {
                 System.out.println("Page 3 is not available!");
                 throw new IllegalStateException("Page 3 is not available!");
@@ -45,7 +49,7 @@ public class ContextBase {
 
         public Flux<Integer> getResult() {
             return Flux.defer(() -> {
-                if (page >= 10) {
+                if (page > 10) {
                     return Flux.empty();
                 } else {
                     return Flux.range(page * 10, 10);

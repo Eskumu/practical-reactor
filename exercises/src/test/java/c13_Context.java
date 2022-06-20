@@ -81,6 +81,7 @@ public class c13_Context extends ContextBase {
         // TODO: feedback template should start with page 0
         Flux<Integer> results = Mono.deferContextual(ctx -> {
                     int pageNr = ctx.get(AtomicInteger.class).get();
+                    System.out.println("Page nr: " + pageNr);
                     return getPage(pageNr);
                 }).doOnEach(signal -> {
                     AtomicInteger pageNr = signal.getContextView().get(AtomicInteger.class);
@@ -96,7 +97,7 @@ public class c13_Context extends ContextBase {
                 .flatMapMany(Page::getResult)
                 .repeat(10)
                 .doOnNext(i -> System.out.println("Received: " + i))
-                .contextWrite(Context.of(AtomicInteger.class, new AtomicInteger(0)));
+                .contextWrite(Context.of(AtomicInteger.class, new AtomicInteger(1)));
 
 
         //don't change this code

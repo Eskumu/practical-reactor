@@ -118,7 +118,6 @@ public class c9_ExecutionControl extends ExecutionControlBase {
     @Test
     public void blocking() {
         BlockHound.install(); //don't change this line
-        // TODO: feedback: test passes without changing code.
         Mono<Void> task = Mono.fromRunnable(this::blockingRunnable)
                 .publishOn(Schedulers.boundedElastic())
                               .then();
